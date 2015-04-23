@@ -476,7 +476,7 @@ VideoHeap::VideoHeap(int devicefd, size_t size, void* base,
 {
     m_ion_device_fd = devicefd;
     m_ion_handle = handle;
-    MemoryHeapBase::init(ionMapfd, base, size, 0, MEM_DEVICE);
+    MemoryHeapBase::init(dup(ionMapfd), base, size, 0, MEM_DEVICE);
     //ionInit(devicefd, base, size, 0 , MEM_DEVICE,handle,ionMapfd);
 }
 #else
@@ -10146,6 +10146,7 @@ omx_vdec::allocate_color_convert_buf::allocate_color_convert_buf()
   init_members();
   ColorFormat = OMX_COLOR_FormatMax;
   dest_format = YCbCr420P;
+  m_native_buffers_enabled = false;
 }
 
 void omx_vdec::allocate_color_convert_buf::set_vdec_client(void *client)
@@ -10164,7 +10165,6 @@ void omx_vdec::allocate_color_convert_buf::init_members() {
   memset(op_buf_ion_info,0,sizeof(m_platform_entry_client));
   for (int i = 0; i < MAX_COUNT;i++)
     pmem_fd[i] = -1;
-  m_native_buffers_enabled = false;
 }
 
 omx_vdec::allocate_color_convert_buf::~allocate_color_convert_buf() {
